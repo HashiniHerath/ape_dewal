@@ -101,7 +101,7 @@ class StoreView : AppCompatActivity() {
                         sellerList.add(store)
                     }
                 }
-                recyclerView.adapter =StoreAdapter(sellerList,this)
+                recyclerView.adapter =StoreAdapter(sellerList,this,database)
 
 
                 Toast.makeText(this, "success", Toast.LENGTH_SHORT).show()
