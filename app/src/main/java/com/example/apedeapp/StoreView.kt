@@ -20,6 +20,7 @@ class StoreView : AppCompatActivity() {
     private lateinit var shopName: TextView
     private lateinit var shopAddress: TextView
     private lateinit var shopContactNumber: TextView
+    private lateinit var addItemBtn: TextView
 
     private lateinit var editStoreBtn: ImageButton
     private lateinit var deleteStoreBtn: ImageButton
@@ -40,6 +41,7 @@ class StoreView : AppCompatActivity() {
         shopName = findViewById(R.id.textView)
         shopAddress = findViewById(R.id.textView13)
         shopContactNumber = findViewById(R.id.textView14)
+        addItemBtn = findViewById(R.id.textView6)
 
         editStoreBtn = findViewById(R.id.imageButton2)
         deleteStoreBtn = findViewById(R.id.imageButton)
@@ -73,6 +75,11 @@ class StoreView : AppCompatActivity() {
 
         editStoreBtn.setOnClickListener {
             val intent = Intent(this, EditStore::class.java)
+            this.startActivity(intent)
+        }
+
+        addItemBtn.setOnClickListener{
+            val intent = Intent(this, AddNewItem::class.java)
             this.startActivity(intent)
         }
 
