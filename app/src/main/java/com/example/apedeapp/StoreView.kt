@@ -1,5 +1,6 @@
 package com.example.apedeapp
 
+import android.annotation.SuppressLint
 import android.content.Intent
 import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
@@ -9,12 +10,18 @@ import android.widget.ImageButton
 import android.widget.ProgressBar
 import android.widget.TextView
 import android.widget.Toast
+import androidx.recyclerview.widget.LinearLayoutManager
+import androidx.recyclerview.widget.RecyclerView
 import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.auth.FirebaseUser
+import com.google.firebase.firestore.FirebaseFirestore
 import com.google.firebase.firestore.ktx.firestore
 import com.google.firebase.ktx.Firebase
 
 class StoreView : AppCompatActivity() {
+
+    private lateinit var recyclerView: RecyclerView
+    private lateinit var sellerList: ArrayList<Store>
 
     private lateinit var sellerID: TextView
     private lateinit var shopName: TextView
@@ -30,9 +37,12 @@ class StoreView : AppCompatActivity() {
 
     private var database = Firebase.firestore
 
+    @SuppressLint("MissingInflatedId")
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_store_view)
+
+        recyclerView= findViewById(R.id.recycler_seller)
 
         auth = FirebaseAuth.getInstance()
         firebaseUser = FirebaseAuth.getInstance().currentUser!!
@@ -45,6 +55,14 @@ class StoreView : AppCompatActivity() {
 
         editStoreBtn = findViewById(R.id.imageButton2)
         deleteStoreBtn = findViewById(R.id.imageButton)
+
+        val singleSellerID = auth.currentUser?.uid.toString()
+
+        recyclerView.layoutManager= LinearLayoutManager(this)
+
+        sellerList = arrayListOf()
+
+        database = FirebaseFirestore.getInstance()
 
         database.collection("sellerStore").document(auth.currentUser!!.uid)
             .get()
@@ -71,6 +89,25 @@ class StoreView : AppCompatActivity() {
             }
             .addOnFailureListener{
                 Toast.makeText(this, "Failed", Toast.LENGTH_SHORT).show()
+            }
+
+        database.collection("sellerItemsBySellerID").document(singleSellerID).collection("singleSellerItems").get()
+
+
+            .addOnSuccessListener {
+                for (data in it.documents){
+                    val store:Store? = data.toObject(Store::class.java)
+                    if (store != null) {
+                        sellerList.add(store)
+                    }
+                }
+                recyclerView.adapter =StoreAdapter(sellerList,this)
+
+
+                Toast.makeText(this, "success", Toast.LENGTH_SHORT).show()
+            }
+            .addOnFailureListener{
+                Toast.makeText(this, it.toString() , Toast.LENGTH_SHORT).show()
             }
 
         editStoreBtn.setOnClickListener {
