@@ -1,9 +1,11 @@
 package com.example.apedeapp
 
 import android.annotation.SuppressLint
+import android.content.Intent
 import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
 import android.widget.ImageButton
+import android.widget.ImageView
 import android.widget.TextView
 import android.widget.Toast
 import androidx.recyclerview.widget.LinearLayoutManager
@@ -19,6 +21,8 @@ class BuyerDashboard : AppCompatActivity() {
     private lateinit var recyclerView: RecyclerView
     private lateinit var buyerItemList: ArrayList<Buyer>
 
+    private lateinit var goToCart: ImageView
+
     private lateinit var sellerID: TextView
 
     private lateinit var auth: FirebaseAuth
@@ -33,12 +37,11 @@ class BuyerDashboard : AppCompatActivity() {
 
         recyclerView= findViewById(R.id.buyerItems)
 
+        goToCart = findViewById(R.id.imageView)
         auth = FirebaseAuth.getInstance()
         firebaseUser = FirebaseAuth.getInstance().currentUser!!
 
         sellerID = findViewById(R.id.textView17)
-
-        val buyerID = auth.currentUser?.uid.toString()
 
         recyclerView.layoutManager= LinearLayoutManager(this)
 
@@ -46,6 +49,9 @@ class BuyerDashboard : AppCompatActivity() {
 
         database = FirebaseFirestore.getInstance()
 
+        goToCart.setOnClickListener{
+            startActivity(Intent(this, CartView::class.java))
+        }
 
         database.collection("sellerItems").get()
             .addOnSuccessListener {
