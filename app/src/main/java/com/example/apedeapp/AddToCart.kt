@@ -1,11 +1,13 @@
 package com.example.apedeapp
 
+import android.content.Intent
 import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
 import android.widget.*
 import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.firestore.ktx.firestore
 import com.google.firebase.ktx.Firebase
+import java.util.*
 
 class AddToCart : AppCompatActivity() {
 
@@ -74,6 +76,34 @@ class AddToCart : AppCompatActivity() {
 
                 bottomPrice.text = (yourIntegerPrice - botPrice).toString()
             }
+        }
+
+        addToCart.setOnClickListener {
+
+            val buyerID = auth.currentUser?.uid.toString()
+            val cartRandomID = UUID.randomUUID().toString()
+
+            val eItemName = itemName.text.toString().trim()
+            val eTopPrice = bottomPrice.text.toString().trim()
+            val eQuantity = quantity.text.toString().trim()
+
+            val cartMap = hashMapOf(
+                "cartItemID" to cartRandomID,
+                "cartItemName" to eItemName,
+                "cartItemPrice" to eTopPrice,
+                "cartItemQuantity" to eQuantity
+            )
+
+            db.collection("cart").document(buyerID).collection("singleUser").document(cartRandomID).set(cartMap)
+                .addOnSuccessListener {
+                    Toast.makeText(this,"Item Added To Cart!", Toast.LENGTH_SHORT).show()
+                    val intent = Intent(this, BuyerDashboard::class.java)
+                    startActivity(intent)
+                    finish()
+                }
+                .addOnFailureListener{
+                    Toast.makeText(this,"Item Added Failed!", Toast.LENGTH_SHORT).show()
+                }
         }
     }
 }
