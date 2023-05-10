@@ -84,7 +84,7 @@ class CartView : AppCompatActivity() {
 
         checkOut.setOnClickListener {
             val intent = Intent(this, CheckOutPage::class.java)
-            //intent.putExtra("totalPrice", totalPrice.text)
+            intent.putExtra("totalPrice", totalPrice.text)
             startActivity(intent)
             finish()
         }
