@@ -5,8 +5,10 @@ import android.content.Intent
 import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
 import android.text.Editable
+import android.view.View
 import android.widget.Button
 import android.widget.EditText
+import android.widget.ProgressBar
 import android.widget.TextView
 import android.widget.Toast
 import com.google.firebase.auth.FirebaseAuth
@@ -28,6 +30,11 @@ class CheckOutPage : AppCompatActivity() {
 
     private lateinit var saveCard: Button
     private lateinit var deleteCard: Button
+    private lateinit var updateCard: Button
+
+    private lateinit var buttonPay: Button
+
+    private lateinit var pb: ProgressBar
 
     private var db = Firebase.firestore
     private lateinit var auth: FirebaseAuth
@@ -50,8 +57,18 @@ class CheckOutPage : AppCompatActivity() {
         textCardExpire = findViewById(R.id.ex)
         textCardCVV = findViewById(R.id.cvv)
 
+        pb = findViewById(R.id.progressBar5)
+
         saveCard = findViewById(R.id.button19)
         deleteCard = findViewById(R.id.button2)
+        updateCard = findViewById(R.id.button5)
+
+        buttonPay = findViewById(R.id.button)
+
+        pb.visibility = View.INVISIBLE
+
+        val t = intent.getStringExtra("totalPrice").toString().toEditable()
+
 
         saveCard.setOnClickListener {
 
@@ -130,6 +147,52 @@ class CheckOutPage : AppCompatActivity() {
                     Toast.makeText(this,"Failed!", Toast.LENGTH_SHORT).show()
                 }
         }
+
+        updateCard.setOnClickListener {
+            val intent = Intent(this, PaymentUpdate::class.java)
+            this.startActivity(intent)
+        }
+
+        buttonPay.setOnClickListener {
+
+            pb.visibility = View.VISIBLE
+
+            if (textCardNumber.text == ""){
+                Toast.makeText(this, "Please Add A Card", Toast.LENGTH_SHORT).show()
+            }
+            else{
+
+                val userID = auth.currentUser?.uid.toString()
+
+                pb.visibility = View.VISIBLE
+
+                val db = FirebaseFirestore.getInstance()
+                val parentDocRef = db.collection("cart").document(userID)
+                val subCollectionRef = parentDocRef.collection("singleUser")
+
+                subCollectionRef.get()
+                    .addOnSuccessListener { querySnapshot ->
+                        for (document in querySnapshot) {
+                            document.reference.delete()
+
+                            pb.visibility = View.INVISIBLE
+                            Toast.makeText(this, "Payment Success!", Toast.LENGTH_SHORT).show()
+
+                            val intent = Intent(this, PaymentSuccess::class.java)
+                            startActivity(intent)
+                            finish()
+                        }
+
+                    }
+                    .addOnFailureListener {
+                        pb.visibility = View.INVISIBLE
+                        Toast.makeText(this, "Payment Failed! Try Again!", Toast.LENGTH_SHORT).show()
+
+                    }
+
+            }
+        }
+
     }
 
     fun String.toEditable(): Editable =  Editable.Factory.getInstance().newEditable(this)

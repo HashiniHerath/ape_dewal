@@ -82,6 +82,7 @@
         app:layout_constraintTop_toBottomOf="@+id/editTextTextPersonName24" />
 
     <androidx.cardview.widget.CardView
+        android:id="@+id/cardView"
         android:layout_width="match_parent"
         android:layout_height="180dp"
         android:backgroundTint="@color/white"
@@ -106,7 +107,6 @@
                 android:textColor="@color/black"
                 android:textSize="20dp"
                 android:textStyle="bold" />
-
 
 
             <TextView
@@ -146,9 +146,9 @@
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_below="@+id/cardName"
+                android:layout_alignParentStart="true"
                 android:layout_marginStart="10dp"
                 android:layout_marginTop="0dp"
-                android:layout_alignParentStart="true"
                 android:text="" />
 
             <TextView
@@ -156,8 +156,8 @@
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_below="@id/ex"
-                android:layout_marginStart="10dp"
                 android:layout_alignParentStart="true"
+                android:layout_marginStart="10dp"
                 android:text="" />
 
             <TextView
@@ -165,14 +165,35 @@
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_below="@id/number"
+                android:layout_alignParentStart="true"
                 android:layout_marginStart="10dp"
-                android:text=""
-                android:layout_alignParentStart="true"/>
+                android:text="" />
 
 
         </RelativeLayout>
 
 
     </androidx.cardview.widget.CardView>
+
+    <Button
+        android:id="@+id/button"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginBottom="16dp"
+        android:text="Pay Amount"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHorizontal_bias="0.498"
+        app:layout_constraintStart_toStartOf="parent" />
+
+    <ProgressBar
+        android:id="@+id/progressBar5"
+        style="?android:attr/progressBarStyle"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        app:layout_constraintBottom_toTopOf="@+id/button"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/cardView" />
 
 </androidx.constraintlayout.widget.ConstraintLayout>

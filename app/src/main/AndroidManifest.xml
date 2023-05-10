@@ -13,6 +13,13 @@
         android:theme="@style/Theme.ApeDeApp"
         tools:targetApi="31">
         <activity
+            android:name=".PaymentSuccess"
+            android:exported="false">
+            <meta-data
+                android:name="android.app.lib_name"
+                android:value="" />
+        </activity>
+        <activity
             android:name=".PaymentUpdate"
             android:exported="false">
             <meta-data

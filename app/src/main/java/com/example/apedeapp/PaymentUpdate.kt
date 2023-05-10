@@ -4,6 +4,7 @@ import android.annotation.SuppressLint
 import android.content.Intent
 import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
+import android.text.Editable
 import android.widget.Button
 import android.widget.EditText
 import android.widget.Toast
@@ -39,6 +40,38 @@ class PaymentUpdate : AppCompatActivity() {
 
         updateCard = findViewById(R.id.button19)
 
+        db.collection("payments").document(auth.currentUser!!.uid).collection("userCardDetails").document(auth.currentUser!!.uid)
+            .get()
+            .addOnSuccessListener {
+
+                if (it != null) {
+                    val textCardNumberU = it.data?.get("cardNumber")?.toString()
+                    val textCardNameU = it.data?.get("cardName")?.toString()
+                    val textCardExU = it.data?.get("cardEx")?.toString()
+                    val textCardCVVU = it.data?.get("cardCVV")?.toString()
+
+
+                    if (textCardNumberU != null) {
+                        cardName.text = textCardNumberU.toEditable()
+                    }
+                    if (textCardNameU != null) {
+                        cardNumber.text = textCardNameU.toEditable()
+                    }
+                    if (textCardExU != null) {
+                        cardExpire.text = textCardExU.toEditable()
+                    }
+                    if (textCardCVVU != null) {
+                        cardCVV.text = textCardCVVU.toEditable()
+                    }
+
+
+                }
+                Toast.makeText(this, "Success", Toast.LENGTH_SHORT).show()
+            }
+            .addOnFailureListener{
+                Toast.makeText(this, "Failed", Toast.LENGTH_SHORT).show()
+            }
+
         updateCard.setOnClickListener {
 
             val userID = auth.currentUser?.uid.toString()
@@ -67,4 +100,6 @@ class PaymentUpdate : AppCompatActivity() {
                 }
         }
     }
+    fun String.toEditable(): Editable =  Editable.Factory.getInstance().newEditable(this)
+
 }
