@@ -51,6 +51,8 @@ class CreateStore : AppCompatActivity() {
 
         pb.visibility = View.INVISIBLE
 
+        val createStoreValidation = CreateStoreValidation()
+
         createStore.setOnClickListener {
 
             pb.visibility = View.VISIBLE
@@ -62,50 +64,58 @@ class CreateStore : AppCompatActivity() {
             val eShopAddress = shopAddress.text.toString().trim()
             val eShopContact = shopContactNumber.text.toString().trim()
 
-            if (TextUtils.isEmpty(eSignupEmail)){
-                Toast.makeText(this, "Please Enter Email", Toast.LENGTH_SHORT).show()
-            }
+            if (createStoreValidation.createStoreFieldValidation(eShopName,eShopAddress,eShopContact)){
 
-            if (TextUtils.isEmpty(eSignupPassword)){
-                Toast.makeText(this, "Please Enter Password", Toast.LENGTH_SHORT).show()
-            }
-
-            auth.createUserWithEmailAndPassword(eSignupEmail, eSignupPassword)
-                .addOnCompleteListener(this) { task ->
-                    if (task.isSuccessful) {
-                        // Sign in success, update UI with the signed-in user's information
-                        Log.d(ContentValues.TAG, "createUserWithEmail:success")
-                        pb.visibility = View.INVISIBLE
-                        val user = auth.currentUser
-
-                        val sellerID = auth.currentUser?.uid.toString()
-
-                        val shopMap = hashMapOf(
-                            "sellerID" to sellerID,
-                            "shopName" to eShopName,
-                            "shopAddress" to eShopAddress,
-                            "shopContact" to eShopContact
-                        )
-
-                        database.collection("sellerStore").document(sellerID).set(shopMap)
-                            .addOnSuccessListener {
-                                val intent = Intent(this, SellerLogin::class.java)
-                                startActivity(intent)
-                                finish()
-                            }
-
-                    } else {
-                        // If sign in fails, display a message to the user.
-                        Log.w(ContentValues.TAG, "createUserWithEmail:failure", task.exception)
-                        pb.visibility = View.INVISIBLE
-                        Toast.makeText(
-                            baseContext,
-                            "Authentication failed.",
-                            Toast.LENGTH_SHORT,
-                        ).show()
-
-                    }
+                if (TextUtils.isEmpty(eSignupEmail)){
+                    Toast.makeText(this, "Please Enter Email", Toast.LENGTH_SHORT).show()
                 }
+
+                if (TextUtils.isEmpty(eSignupPassword)){
+                    Toast.makeText(this, "Please Enter Password", Toast.LENGTH_SHORT).show()
+                }
+
+                auth.createUserWithEmailAndPassword(eSignupEmail, eSignupPassword)
+                    .addOnCompleteListener(this) { task ->
+                        if (task.isSuccessful) {
+                            // Sign in success, update UI with the signed-in user's information
+                            Log.d(ContentValues.TAG, "createUserWithEmail:success")
+                            pb.visibility = View.INVISIBLE
+                            val user = auth.currentUser
+
+                            val sellerID = auth.currentUser?.uid.toString()
+
+                            val shopMap = hashMapOf(
+                                "sellerID" to sellerID,
+                                "shopName" to eShopName,
+                                "shopAddress" to eShopAddress,
+                                "shopContact" to eShopContact
+                            )
+
+                            database.collection("sellerStore").document(sellerID).set(shopMap)
+                                .addOnSuccessListener {
+                                    val intent = Intent(this, SellerLogin::class.java)
+                                    startActivity(intent)
+                                    finish()
+                                }
+
+                        } else {
+                            // If sign in fails, display a message to the user.
+                            Log.w(ContentValues.TAG, "createUserWithEmail:failure", task.exception)
+                            pb.visibility = View.INVISIBLE
+                            Toast.makeText(
+                                baseContext,
+                                "Authentication failed.",
+                                Toast.LENGTH_SHORT,
+                            ).show()
+
+                        }
+            }
+
+
+                }else{
+                Toast.makeText(this, "All Fields are Required!!", Toast.LENGTH_SHORT).show()
+                pb.visibility = View.INVISIBLE
+            }
         }
 
 
