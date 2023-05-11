@@ -24,6 +24,7 @@ class BuyerDashboard : AppCompatActivity() {
     private lateinit var goToCart: ImageView
 
     private lateinit var sellerID: TextView
+    private lateinit var buyerLogout: TextView
 
     private lateinit var auth: FirebaseAuth
     private lateinit var firebaseUser: FirebaseUser
@@ -42,6 +43,7 @@ class BuyerDashboard : AppCompatActivity() {
         firebaseUser = FirebaseAuth.getInstance().currentUser!!
 
         sellerID = findViewById(R.id.textView17)
+        buyerLogout = findViewById(R.id.textView23)
 
         recyclerView.layoutManager= LinearLayoutManager(this)
 
@@ -69,6 +71,9 @@ class BuyerDashboard : AppCompatActivity() {
                 Toast.makeText(this, it.toString() , Toast.LENGTH_SHORT).show()
             }
 
+        buyerLogout.setOnClickListener{
+            startActivity(Intent(this, HelloYou::class.java))
+        }
 
     }
 }
