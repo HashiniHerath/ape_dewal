@@ -4,6 +4,7 @@ import android.content.Intent
 import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
 import android.widget.*
+import com.bumptech.glide.Glide
 import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.firestore.ktx.firestore
 import com.google.firebase.ktx.Firebase
@@ -15,6 +16,8 @@ class AddToCart : AppCompatActivity() {
     private lateinit var quantity: TextView
     private lateinit var bottomPrice: TextView
     private lateinit var itemID: TextView
+
+    private lateinit var image:ImageView
 
     private lateinit var plusQuantity: ImageButton
     private lateinit var minusQuantity: ImageButton
@@ -33,6 +36,8 @@ class AddToCart : AppCompatActivity() {
         bottomPrice = findViewById(R.id.textView9)
         itemID = findViewById(R.id.itemIDCart)
 
+        image = findViewById(R.id.imageView9)
+
         plusQuantity = findViewById(R.id.imageButton4)
         minusQuantity = findViewById(R.id.imageButton3)
 
@@ -43,6 +48,10 @@ class AddToCart : AppCompatActivity() {
         itemName.text = intent.getStringExtra("iName").toString()
         bottomPrice.text = intent.getStringExtra("iPrice").toString()
         itemID.text = intent.getStringExtra("itemID").toString()
+        val imageUrl = intent.getStringExtra("image")
+        Glide.with(this)
+            .load(imageUrl)
+            .into(image)
 
         val botPrice: Int = bottomPrice.text.toString().trim().toInt()
         println(botPrice)

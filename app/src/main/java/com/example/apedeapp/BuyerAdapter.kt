@@ -8,6 +8,7 @@ import android.view.ViewGroup
 import android.widget.ImageView
 import android.widget.TextView
 import androidx.recyclerview.widget.RecyclerView
+import com.bumptech.glide.Glide
 
 class BuyerAdapter(
     private val buyerItemList: ArrayList<Buyer>,
@@ -21,6 +22,7 @@ class BuyerAdapter(
         val itemPrice: TextView = itemView.findViewById(R.id.price)
         val itemDescription: TextView = itemView.findViewById(R.id.desription)
         val itemColor: TextView = itemView.findViewById(R.id.color)
+        val image: ImageView = itemView.findViewById(R.id.imageView3)
 
         val addToCart : TextView = itemView.findViewById(R.id.textView11)
 
@@ -38,10 +40,12 @@ class BuyerAdapter(
         holder.itemPrice.text = buyerItemList[position].ItemPrice
         holder.itemColor.text = buyerItemList[position].itemColor
         holder.itemDescription.text = buyerItemList[position].ItemDescription
+        Glide.with(context).load(buyerItemList[position].url).into(holder.image)
 
         holder.addToCart.setOnClickListener(){
             val intent = Intent(context, AddToCart::class.java)
             intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK)
+            intent.putExtra("image", buyerItemList[position].url)
             intent.putExtra("itemID", buyerItemList[position].sellerID)
             intent.putExtra("iName", buyerItemList[position].itemName)
             intent.putExtra("iPrice", buyerItemList[position].ItemPrice)
