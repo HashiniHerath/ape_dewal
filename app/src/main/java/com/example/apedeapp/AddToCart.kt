@@ -24,6 +24,8 @@ class AddToCart : AppCompatActivity() {
 
     private lateinit var addToCart: Button
 
+    private val cartQuantityValidation = CartQuantityValidation()
+
     private var db = Firebase.firestore
     private lateinit var auth: FirebaseAuth
 
@@ -77,7 +79,7 @@ class AddToCart : AppCompatActivity() {
             val yourIntegerPrice: Int = bottomPrice.text.toString().trim().toInt()
             println(yourIntegerPrice)
 
-            if (yourInteger == 1 || yourIntegerPrice == botPrice){
+            if (cartQuantityValidation.cartQuantityValidation(yourInteger,yourIntegerPrice,botPrice)){
                 Toast.makeText(this, "Check", Toast.LENGTH_SHORT).show()
             }else{
 
