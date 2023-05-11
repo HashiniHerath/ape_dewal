@@ -7,6 +7,7 @@ import android.os.Bundle
 import android.text.Editable
 import android.view.View
 import android.widget.*
+import com.bumptech.glide.Glide
 import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.firestore.ktx.firestore
 import com.google.firebase.ktx.Firebase
@@ -24,6 +25,7 @@ class UpdateSellerItem : AppCompatActivity() {
 
     private var database = Firebase.firestore
     private lateinit var auth: FirebaseAuth
+    private lateinit var image:ImageView
 
     private lateinit var pb: ProgressBar
 
@@ -37,6 +39,7 @@ class UpdateSellerItem : AppCompatActivity() {
         price = findViewById(R.id.editTextTextPersonName15)
         description = findViewById(R.id.editTextTextPersonName16)
         randomID = findViewById(R.id.textView7)
+        image = findViewById(R.id.imageView6)
         itemID = findViewById(R.id.textView73)
 
         updateItemBTN = findViewById(R.id.button13)
@@ -53,6 +56,10 @@ class UpdateSellerItem : AppCompatActivity() {
         price.text = intent.getStringExtra("itemPrice").toString().toEditable()
         colour.text = intent.getStringExtra("itemColor").toString().toEditable()
         description.text = intent.getStringExtra("itemDescription").toString().toEditable()
+        val imageUrl = intent.getStringExtra("image")
+        Glide.with(this)
+            .load(imageUrl)
+            .into(image)
 
 
         updateItemBTN.setOnClickListener {
