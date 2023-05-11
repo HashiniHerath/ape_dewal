@@ -42,7 +42,7 @@ class AddNewItem : AppCompatActivity() {
 
     private lateinit var storageReference: FirebaseStorage
 
-    val addItemValidation = AddItemValidation()
+    private val addItemValidation = AddItemValidation()
 
     private lateinit var uri: Uri
 

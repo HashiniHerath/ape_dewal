@@ -19,14 +19,14 @@ import com.google.firebase.ktx.Firebase
 class CheckOutPage : AppCompatActivity() {
 
     private lateinit var cardName: EditText
-    private lateinit var cardNumber:EditText
-    private lateinit var cardExpire:EditText
-    private lateinit var cardCVV:EditText
+    private lateinit var cardNumber: EditText
+    private lateinit var cardExpire: EditText
+    private lateinit var cardCVV: EditText
 
     private lateinit var textCardName: TextView
-    private lateinit var textCardNumber:TextView
-    private lateinit var textCardExpire:TextView
-    private lateinit var textCardCVV:TextView
+    private lateinit var textCardNumber: TextView
+    private lateinit var textCardExpire: TextView
+    private lateinit var textCardCVV: TextView
 
     private lateinit var saveCard: Button
     private lateinit var deleteCard: Button
@@ -35,6 +35,8 @@ class CheckOutPage : AppCompatActivity() {
     private lateinit var buttonPay: Button
 
     private lateinit var pb: ProgressBar
+
+    private val cardDetailsValidation = CardDetailsValidation()
 
     private var db = Firebase.firestore
     private lateinit var auth: FirebaseAuth
@@ -69,37 +71,8 @@ class CheckOutPage : AppCompatActivity() {
 
         val t = intent.getStringExtra("totalPrice").toString().toEditable()
 
-
-        saveCard.setOnClickListener {
-
-            val userID = auth.currentUser?.uid.toString()
-
-            val eCardName = cardName.text.toString().trim()
-            val eCardNumber = cardNumber.text.toString().trim()
-            val eCardEx = cardExpire.text.toString().trim()
-            val eCardCVV = cardCVV.text.toString().trim()
-
-            val cardMap = hashMapOf(
-                "userID" to userID,
-                "cardNumber" to eCardNumber,
-                "cardName" to eCardName,
-                "cardEx" to eCardEx,
-                "cardCVV" to eCardCVV
-            )
-
-            db.collection("payments").document(userID).collection("userCardDetails").document(userID).set(cardMap)
-                .addOnSuccessListener {
-                    Toast.makeText(this,"Added", Toast.LENGTH_SHORT).show()
-                    val intent = Intent(this, CheckOutPage::class.java)
-                    startActivity(intent)
-                    finish()
-                }
-                .addOnFailureListener{
-                    Toast.makeText(this,"Failed!", Toast.LENGTH_SHORT).show()
-                }
-        }
-
-        db.collection("payments").document(auth.currentUser!!.uid).collection("userCardDetails").document(auth.currentUser!!.uid)
+        db.collection("payments").document(auth.currentUser!!.uid).collection("userCardDetails")
+            .document(auth.currentUser!!.uid)
             .get()
             .addOnSuccessListener {
 
@@ -127,9 +100,53 @@ class CheckOutPage : AppCompatActivity() {
                 }
                 Toast.makeText(this, "Success", Toast.LENGTH_SHORT).show()
             }
-            .addOnFailureListener{
+            .addOnFailureListener {
                 Toast.makeText(this, "Failed", Toast.LENGTH_SHORT).show()
             }
+
+        saveCard.setOnClickListener {
+
+            val userID = auth.currentUser?.uid.toString()
+
+            val eCardName = cardName.text.toString().trim()
+            val eCardNumber = cardNumber.text.toString().trim()
+            val eCardEx = cardExpire.text.toString().trim()
+            val eCardCVV = cardCVV.text.toString().trim()
+
+            if (cardDetailsValidation.cardFieldValidation(
+                    eCardName,
+                    eCardNumber,
+                    eCardEx,
+                    eCardCVV
+                )
+            ) {
+                val cardMap = hashMapOf(
+                    "userID" to userID,
+                    "cardNumber" to eCardNumber,
+                    "cardName" to eCardName,
+                    "cardEx" to eCardEx,
+                    "cardCVV" to eCardCVV
+                )
+
+                db.collection("payments").document(userID).collection("userCardDetails")
+                    .document(userID).set(cardMap)
+                    .addOnSuccessListener {
+                        Toast.makeText(this, "Added", Toast.LENGTH_SHORT).show()
+                        val intent = Intent(this, CheckOutPage::class.java)
+                        startActivity(intent)
+                        finish()
+                    }
+                    .addOnFailureListener {
+                        Toast.makeText(this, "Failed!", Toast.LENGTH_SHORT).show()
+                    }
+
+
+        }else{
+                Toast.makeText(this, "All Fields are Required!!", Toast.LENGTH_SHORT).show()
+                pb.visibility = View.INVISIBLE
+    }
+}
+
 
 
         deleteCard.setOnClickListener {
