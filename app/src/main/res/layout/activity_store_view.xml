@@ -117,6 +117,17 @@
             app:layout_constraintTop_toTopOf="@+id/imageButton"
             app:srcCompat="@drawable/ic_baseline_edit_24" />
 
+        <TextView
+            android:id="@+id/textView22"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginStart="16dp"
+            android:text="Logout"
+            android:textColor="@color/purple_500"
+            app:layout_constraintBottom_toBottomOf="@+id/imageButton2"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toTopOf="@+id/imageButton2" />
+
     </androidx.constraintlayout.widget.ConstraintLayout>
 
 

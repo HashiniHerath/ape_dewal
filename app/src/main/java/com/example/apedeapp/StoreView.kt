@@ -17,6 +17,7 @@ import com.google.firebase.auth.FirebaseUser
 import com.google.firebase.firestore.FirebaseFirestore
 import com.google.firebase.firestore.ktx.firestore
 import com.google.firebase.ktx.Firebase
+import kotlin.math.log
 
 class StoreView : AppCompatActivity() {
 
@@ -37,6 +38,8 @@ class StoreView : AppCompatActivity() {
 
     private var database = Firebase.firestore
 
+    private lateinit var logOut: TextView
+
     @SuppressLint("MissingInflatedId")
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -52,6 +55,8 @@ class StoreView : AppCompatActivity() {
         shopAddress = findViewById(R.id.textView13)
         shopContactNumber = findViewById(R.id.textView14)
         addItemBtn = findViewById(R.id.textView6)
+
+        logOut = findViewById(R.id.textView22)
 
         editStoreBtn = findViewById(R.id.imageButton2)
         deleteStoreBtn = findViewById(R.id.imageButton)
@@ -133,6 +138,12 @@ class StoreView : AppCompatActivity() {
                 .addOnFailureListener {
                     Toast.makeText(this, "Delete Failed!", Toast.LENGTH_SHORT).show()
                 }
+        }
+
+        logOut.setOnClickListener{
+            val intent = Intent(this, HelloYou::class.java)
+            this.startActivity(intent)
+            finish()
         }
 
     }
