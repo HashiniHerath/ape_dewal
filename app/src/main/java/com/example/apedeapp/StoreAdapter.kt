@@ -10,6 +10,7 @@ import android.widget.ImageView
 import android.widget.TextView
 import android.widget.Toast
 import androidx.recyclerview.widget.RecyclerView
+import com.bumptech.glide.Glide
 import com.google.firebase.firestore.FirebaseFirestore
 
 class StoreAdapter (
@@ -26,6 +27,7 @@ class StoreAdapter (
         val itemDescription: TextView = itemView.findViewById(R.id.desription)
         val itemColor: TextView = itemView.findViewById(R.id.color)
         val randomID: TextView = itemView.findViewById(R.id.randomId)
+        val image: ImageView = itemView.findViewById(R.id.imageView3)
 
         val updateBtn: Button = itemView.findViewById(R.id.button5)
         val deleteBtn: Button = itemView.findViewById(R.id.button2)
@@ -45,10 +47,12 @@ class StoreAdapter (
         holder.itemDescription.text = storeItemsList[position].ItemDescription
         holder.itemColor.text = storeItemsList[position].itemColor
         holder.randomID.text = storeItemsList[position].randomID
+        Glide.with(context).load(storeItemsList[position].url).into(holder.image)
 
         holder.updateBtn.setOnClickListener(){
             val intent = Intent(context, UpdateSellerItem::class.java)
             intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK)
+            intent.putExtra("image", storeItemsList[position].url)
             intent.putExtra("itemID", storeItemsList[position].sellerID)
             intent.putExtra("randomID", storeItemsList[position].randomID)
             intent.putExtra("itemPrice", storeItemsList[position].ItemPrice)
