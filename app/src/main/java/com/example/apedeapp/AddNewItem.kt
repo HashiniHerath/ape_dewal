@@ -42,6 +42,8 @@ class AddNewItem : AppCompatActivity() {
 
     private lateinit var storageReference: FirebaseStorage
 
+    val addItemValidation = AddItemValidation()
+
     private lateinit var uri: Uri
 
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -73,49 +75,58 @@ class AddNewItem : AppCompatActivity() {
             val randomID = UUID.randomUUID().toString()
             val sellerID = auth.currentUser?.uid.toString()
 
+            val eItemName = itemName.text.toString().trim()
+            val eColor = colour.text.toString().trim()
+            val ePrice = price.text.toString().trim()
+            val eDescription = description.text.toString().trim()
+
+            if(addItemValidation.addItemFieldValidation(eItemName,eColor,ePrice,eDescription)){
+
             storageReference.getReference("Images/$sellerID").child(System.currentTimeMillis().toString())
                 .putFile(uri)
                 .addOnSuccessListener { task ->
                     task.metadata!!.reference!!.downloadUrl
                         .addOnSuccessListener { uri ->
 
-                            val eItemName = itemName.text.toString().trim()
-                            val eColor = colour.text.toString().trim()
-                            val ePrice = price.text.toString().trim()
-                            val eDescription = description.text.toString().trim()
+                                val sellerMap = hashMapOf(
+                                    "sellerID" to sellerID,
+                                    "randomID" to randomID,
+                                    "itemName" to eItemName,
+                                    "ItemPrice" to ePrice,
+                                    "itemColor" to eColor,
+                                    "ItemDescription" to eDescription,
+                                    "url" to uri
+                                )
 
-                            val sellerMap = hashMapOf(
-                                "sellerID" to sellerID,
-                                "randomID" to randomID,
-                                "itemName" to eItemName,
-                                "ItemPrice" to ePrice,
-                                "itemColor" to eColor,
-                                "ItemDescription" to eDescription,
-                                "url" to uri
-                            )
+                                database.collection("sellerItems").document(randomID).set(sellerMap)
+                                database.collection("sellerItemsBySellerID").document(sellerID)
+                                    .collection("singleSellerItems").document(randomID)
+                                    .set(sellerMap)
+                                    .addOnSuccessListener {
+                                        pb.visibility = View.INVISIBLE
+                                        val i = Intent(this, StoreView::class.java)
+                                        startActivity(i)
+                                        finish()
+                                    }
+                                    .addOnFailureListener {
+                                        pb.visibility = View.INVISIBLE
+                                        Toast.makeText(this, "Fail!", Toast.LENGTH_SHORT).show()
+                                    }
 
-                            database.collection("sellerItems").document(randomID).set(sellerMap)
-                            database.collection("sellerItemsBySellerID").document(sellerID)
-                                .collection("singleSellerItems").document(randomID)
-                                .set(sellerMap)
-                                .addOnSuccessListener {
-                                    pb.visibility = View.INVISIBLE
-                                    val i = Intent(this, StoreView::class.java)
-                                    startActivity(i)
-                                    finish()
-                                }
-                                .addOnFailureListener {
-                                    pb.visibility = View.INVISIBLE
-                                    Toast.makeText(this, "Fail!", Toast.LENGTH_SHORT).show()
-                                }
+                            }
+
+
                         }
-                }
+                } else{
+                Toast.makeText(this, "All Fields are Required!!", Toast.LENGTH_SHORT).show()
+                pb.visibility = View.INVISIBLE
+            }
         }
     }
 
     private fun selectImage() {
 
-        val options = arrayOf<CharSequence>("Take Photo", "Choose from Gallery", "Cancel")
+        val options = arrayOf<CharSequence>("Choose from Gallery", "Cancel")
         val builder = AlertDialog.Builder(this)
         builder.setTitle("Add Photo!")
         builder.setItems(options) { dialog, item ->
