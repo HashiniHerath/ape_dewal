@@ -27,6 +27,7 @@ class CheckOutPage : AppCompatActivity() {
     private lateinit var textCardNumber: TextView
     private lateinit var textCardExpire: TextView
     private lateinit var textCardCVV: TextView
+    private lateinit var total: TextView
 
     private lateinit var saveCard: Button
     private lateinit var deleteCard: Button
@@ -59,6 +60,8 @@ class CheckOutPage : AppCompatActivity() {
         textCardExpire = findViewById(R.id.ex)
         textCardCVV = findViewById(R.id.cvv)
 
+        total = findViewById(R.id.textView254)
+
         pb = findViewById(R.id.progressBar5)
 
         saveCard = findViewById(R.id.button19)
@@ -68,6 +71,8 @@ class CheckOutPage : AppCompatActivity() {
         buttonPay = findViewById(R.id.button)
 
         pb.visibility = View.INVISIBLE
+
+        total.text = intent.getStringExtra("totalPrice").toString()
 
         val t = intent.getStringExtra("totalPrice").toString().toEditable()
 
